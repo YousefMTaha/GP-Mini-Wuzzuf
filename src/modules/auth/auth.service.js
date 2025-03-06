@@ -7,6 +7,7 @@ import { compare } from "../../utils/hash/compare.js";
 import { generateToken } from "../../utils/token/generate-token.js";
 import { verifyToken } from "../../utils/token/verify-token.js";
 import { emailEvent } from "../../utils/email/email-event.js";
+import otpModel from "../../DB/models/otp.mode.js";
 
 cron.schedule("0 */6 * * *", async () => {
   const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
@@ -16,64 +17,44 @@ cron.schedule("0 */6 * * *", async () => {
   );
 });
 
-export const signup = async (req, res, next) => {
+export const sendOTP = async (req, res, next) => {
+  // get data from req
   const { email } = req.body;
 
-  const userExist = await userModel.findOne({ email });
-  if (userExist) return next(new Error("User already exists", { cause: 409 }));
+  // check user existence
+  const userExist = await User.findOne({ email }); //{} | null
+  if (userExist) return next(new Error("User already exist", { cause: 409 }));
 
   const otp = Randomstring.generate({ length: 5, charset: "numeric" });
-  const hashedOTP = await bcrypt.hash(otp, 10);
-
-  await userModel.create({
-    ...req.body,
-    OTP: [
-      {
-        code: hashedOTP,
-        type: otpTypes.CONFIRM_EMAIL,
-        expiresIn: new Date(Date.now() + 10 * 60 * 1000),
-      },
-    ],
-  });
-
-  emailEvent.emit("sendEmail", email, "Verify your email", otp);
+  // delete all related OTPs
+  await otpModel.deleteMany({ email });
+  // save to db
+  await otpModel.create({ email, otp });
+  // send to mail
+  emailEvent.emit("sendEmail", email, "Confirm Your Email", otp);
 
   return res.status(200).json({
     success: true,
-    message: "Signup successful. Please verify your email with the OTP sent.",
+    message: "otp sent successfully",
   });
 };
 
-// check
-export const confirmOtp = async (req, res, next) => {
-  const { email, otp, otpType } = req.body;
+export const register = async (req, res, next) => {
+  // get data from req
+  const { email, otp } = req.body;
+  // check otp
+  const otpExist = await otpModel.findOne({ email, otp });
+  if (!otpExist) return next(new Error("wrong otp"));
+  // create
+  req.body.isConfirmed = true;
+  const createdUser = await userModel.create(req.body);
 
-  const user = await userModel.findOne({
-    email,
-    "OTP.type": otpType,
-    "OTP.expiresIn": { $gt: new Date() },
-  });
-
-  if (!user) {
-    return next(new Error("No OTP found or OTP expired"));
-  }
-
-  const otpRecord = user.OTP.find((o) => o.type === otpType);
-
-  if (!bcrypt.compareSync(otp, otpRecord.code)) {
-    return next(new Error("Invalid OTP"));
-  }
-
-  if (otpType === otpTypes.CONFIRM_EMAIL) {
-    user.isConfirmed = true;
-  }
-
-  user.OTP = user.OTP.filter((o) => o.expiresIn < new Date());
-  await user.save();
-
-  return res.status(200).json({
+  await otpExist.deleteOne();
+  // send success response
+  return res.status(201).json({
     success: true,
-    message: "OTP verified successfully",
+    message: "user created successfully",
+    data: createdUser,
   });
 };
 

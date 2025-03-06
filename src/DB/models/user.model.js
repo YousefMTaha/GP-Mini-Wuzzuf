@@ -107,23 +107,6 @@ const userSchema = new Schema(
       secure_url: String,
       public_id: String,
     },
-    OTP: [
-      {
-        code: {
-          type: String,
-          required: true,
-        },
-        type: {
-          type: String,
-          enum: Object.values(otpTypes),
-          required: true,
-        },
-        expiresIn: {
-          type: Date,
-          required: true,
-        },
-      },
-    ],
   },
   {
     timestamps: true,
