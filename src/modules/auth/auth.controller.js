@@ -9,9 +9,9 @@ const authRouter = Router();
 authRouter.post(
   "/register",
   isValid(authValidation.register),
-  asyncHandler(authService.signup)
+  asyncHandler(authService.register)
 );
-authRouter.post("/confirm-Otp", asyncHandler(authService.confirmOtp));
+authRouter.post("/send-otp", asyncHandler(authService.sendOTP));
 
 authRouter.post(
   "/login",

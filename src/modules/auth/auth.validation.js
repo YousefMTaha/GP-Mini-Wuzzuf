@@ -16,6 +16,7 @@ export const register = joi
     gender: joi.string().valid(...Object.values(genders)),
     DOB: joi.string().required(),
     role: joi.string().valid(...Object.values(roles)),
+    otp: joi.string().required(),
   })
   .required();
 

@@ -22,7 +22,7 @@ export const sendOTP = async (req, res, next) => {
   const { email } = req.body;
 
   // check user existence
-  const userExist = await User.findOne({ email }); //{} | null
+  const userExist = await userModel.findOne({ email }); //{} | null
   if (userExist) return next(new Error("User already exist", { cause: 409 }));
 
   const otp = Randomstring.generate({ length: 5, charset: "numeric" });
