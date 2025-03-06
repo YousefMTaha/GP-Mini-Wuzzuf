@@ -4,7 +4,7 @@ This is a backend API built using **Express.js** and **MongoDB** for a job searc
 
 ## API Documentation
 
-[Postman-Doc](https://documenter.getpostman.com/view/25674968/2sAYdhLB3X)
+[Postman-Doc](https://documenter.getpostman.com/view/25674968/2sAYdmmTd4)
 
 
 
