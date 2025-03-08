@@ -11,7 +11,6 @@ import io from "../../socket.io/index.js";
 
 export const addJob = async (req, res, next) => {
   const company = await companyModel.findById(req.params.id);
-  console.log(req.user._id);
 
   if (!company) {
     return next(new Error("No company found", { cause: 404 }));

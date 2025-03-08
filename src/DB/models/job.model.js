@@ -33,6 +33,10 @@ const jobSchema = new Schema(
       required: true,
       enum: Object.values(jobLocations),
     },
+    jobCountry: {
+      type: String,
+      required: true,
+    },
     workingTime: {
       type: String,
       required: true,
