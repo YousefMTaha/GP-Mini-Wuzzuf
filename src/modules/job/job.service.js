@@ -43,7 +43,7 @@ export const addJob = async (req, res, next) => {
     companyId: company._id,
   });
 
-  res.status(201).json({ success: true, job });
+  res.status(201).json({ success: true, job, company });
 };
 
 export const updateJob = async (req, res, next) => {
