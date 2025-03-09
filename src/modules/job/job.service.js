@@ -95,10 +95,12 @@ export const getCompanyJobs = async (req, res, next) => {
   }
 
   if (jobId) {
-    const job = await jobModel.findOne({
-      _id: jobId,
-      companyId: query.companyId,
-    });
+    const job = await jobModel
+      .findOne({
+        _id: jobId,
+        companyId: query.companyId,
+      })
+      .populate("companyId");
     return job
       ? res.status(200).json({ message: "job found", job })
       : next(new Error("Job not found", { cause: 404 }));
