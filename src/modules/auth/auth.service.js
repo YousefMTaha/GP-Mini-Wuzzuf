@@ -81,21 +81,10 @@ export const login = async (req, res, next) => {
     await user.updateOne({ $unset: { deletedAt: 1 } });
   }
 
-  const accessToken = generateToken({
-    payload: { email },
-    options: { expiresIn: "1h" },
-  });
-
-  const refreshToken = generateToken({
-    payload: { email },
-    options: { expiresIn: "7d" },
-  });
-
   return res.status(200).json({
     success: true,
     message: "Login successful",
-    accessToken,
-    refreshToken,
+    token: generateToken({ payload: { email } }),
   });
 };
 
