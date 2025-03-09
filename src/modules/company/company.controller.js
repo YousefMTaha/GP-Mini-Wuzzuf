@@ -17,9 +17,6 @@ router.use("/:companyId/jobs", jobRouter);
 router.post(
   "/",
   isAuthenticate,
-  cloudUpload([...fileValidation.images, ...fileValidation.files]).single(
-    "attachment"
-  ),
   // isValid(CV.addCompany),
   asyncHandler(companyService.addCompany)
 );

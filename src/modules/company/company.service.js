@@ -15,21 +15,8 @@ export const addCompany = async (req, res, next) => {
   }
 
   req.body.createdBy = req.user._id;
-  req.body.HRs = JSON.parse(req.body.HRs);
-  req.body.numberOfEmployees = JSON.parse(req.body.numberOfEmployees);
 
   const company = await companyModel.create(req.body);
-
-  const attachment = await cloudinary.uploader.upload(req.file.path, {
-    folder: cloudinaryFolders(company._id).companyLogo,
-  });
-
-  await company.updateOne({
-    legalAttachment: {
-      secure_url: attachment.secure_url,
-      public_id: attachment.public_id,
-    },
-  });
 
   res.status(201).json({ msg: "Company created successfully", company });
 };
@@ -77,7 +64,6 @@ export const deleteCompany = async (req, res, next) => {
     deletedAt: { $exists: false },
   });
   console.log(req.user._id);
-  
 
   if (!company) {
     return next(new Error("Company not found", { cause: 404 }));

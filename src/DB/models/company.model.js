@@ -64,7 +64,7 @@ const companySchema = new Schema(
     deletedAt: Date,
     approvedByAdmin: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   {
