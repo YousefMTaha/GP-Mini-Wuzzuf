@@ -82,20 +82,20 @@ companySchema.virtual("jobs", {
   ref: "Job",
 });
 
-companySchema.post("findOne", function (doc) {
-  if (doc && doc.numberOfEmployees.from != undefined) {
-    doc._doc.numberOfEmployees = `[${doc.numberOfEmployees.from} - ${doc.numberOfEmployees.to}]`;
-  }
-  return doc;
-});
+// companySchema.post("findOne", function (doc) {
+//   if (doc && doc.numberOfEmployees.from != undefined) {
+//     doc._doc.numberOfEmployees = `[${doc.numberOfEmployees.from} - ${doc.numberOfEmployees.to}]`;
+//   }
+//   return doc;
+// });
 
-companySchema.post("find", function (docs) {
-  return docs.map((doc) => {
-    if (doc && doc.numberOfEmployees.from != undefined) {
-      doc._doc.numberOfEmployees = `[${doc.numberOfEmployees.from} - ${doc.numberOfEmployees.to}]`;
-    }
-  });
-});
+// companySchema.post("find", function (docs) {
+//   return docs.map((doc) => {
+//     if (doc && doc.numberOfEmployees.from != undefined) {
+//       doc._doc.numberOfEmployees = `[${doc.numberOfEmployees.from} - ${doc.numberOfEmployees.to}]`;
+//     }
+//   });
+// });
 
 companySchema.post("save", async function () {
   if (this.deletedAt) {

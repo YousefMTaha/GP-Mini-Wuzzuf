@@ -82,18 +82,9 @@ export const deleteJob = async (req, res, next) => {
 
 export const getCompanyJobs = async (req, res, next) => {
   const { companyId, jobId } = req.params;
-  const { page = 1, limit = 10, sort = "-createdAt", companyName } = req.query;
+  const { page = 1, limit = 10, sort = "-createdAt" } = req.query;
   const skip = (page - 1) * limit;
   let query = { companyId };
-
-  if (companyName) {
-    const company = await companyModel.findOne({
-      companyName: { $regex: companyName, $options: "i" },
-      deletedAt: { $exists: false },
-    });
-    query.companyId = company?._id || null;
-  }
-
   if (jobId) {
     const job = await jobModel
       .findOne({
@@ -128,14 +119,34 @@ export const getCompanyJobs = async (req, res, next) => {
     : next(new Error("No jobs Found", { cause: 404 }));
 };
 
+async function getCompaniesId(name) {
+  const companies = await companyModel.find({
+    companyName: { $regex: name, $options: "i" },
+  });
+
+  const ids = companies.map((company) => company._id);
+
+  return ids;
+}
+
 export const filterJobs = async (req, res, next) => {
   const {
     page = 1,
     limit = 10,
     sort = "-createdAt",
+    jobTitle,
+    companyName,
     ...restQueryFields
   } = req.query;
   const skip = (page - 1) * limit;
+
+  if (jobTitle) {
+    restQueryFields.jobTitle = { $regex: jobTitle, $options: "i" };
+  }
+
+  if (companyName) {
+    restQueryFields.companyId = { $in: await getCompaniesId(companyName) };
+  }
 
   const jobs = await jobModel
     .find(restQueryFields)

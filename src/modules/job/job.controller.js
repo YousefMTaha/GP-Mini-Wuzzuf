@@ -43,7 +43,7 @@ router.post(
   asyncHandler(JS.applyJob)
 );
 
-router.get("/filter", isAuthenticate, JS.filterJobs);
+router.get("/filter", isAuthenticate, asyncHandler(JS.filterJobs));
 
 router.get(
   "/getJobApplications/:id",
@@ -58,6 +58,6 @@ router.post(
   asyncHandler(JS.handleApplication)
 );
 
-router.get("/:jobId?", isAuthenticate, JS.getCompanyJobs);
+router.get("/:jobId?", isAuthenticate, asyncHandler(JS.getCompanyJobs));
 
 export default router;
