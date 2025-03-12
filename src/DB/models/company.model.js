@@ -74,6 +74,8 @@ const companySchema = new Schema(
   }
 );
 
+companySchema.index({ createBy: 1, companyName: 1 });
+
 companySchema.virtual("jobs", {
   localField: "_id",
   foreignField: "companyId",

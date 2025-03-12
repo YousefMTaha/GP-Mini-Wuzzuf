@@ -116,7 +116,7 @@ export const createHtml = (code) => {
           <tr>
             <td align="center" valign="top" style="padding: 36px 24px;">
               <a href="https://www.blogdesire.com" target="_blank" style="display: inline-block;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/My_Hero_Academia_logo_in_Japan_20150106.png" alt="Logo" border="0" width="100" style="display: block; width: 100x; max-width: 100px; min-width: 100px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/My_Hero_Academia_logo_in_Japan_20050106.png" alt="Logo" border="0" width="100" style="display: block; width: 100x; max-width: 100px; min-width: 100px;">
               </a>
             </td>
           </tr>

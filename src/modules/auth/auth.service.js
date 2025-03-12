@@ -51,7 +51,7 @@ export const register = async (req, res, next) => {
 
   await otpExist.deleteOne();
   // send success response
-  return res.status(201).json({
+  return res.status(200).json({
     success: true,
     message: "user created successfully",
     data: createdUser,

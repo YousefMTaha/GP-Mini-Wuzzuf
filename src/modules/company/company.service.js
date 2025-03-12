@@ -18,7 +18,7 @@ export const addCompany = async (req, res, next) => {
 
   const company = await companyModel.create(req.body);
 
-  res.status(201).json({ msg: "Company created successfully", company });
+  res.status(200).json({ msg: "Company created successfully", company });
 };
 
 export const updateCompany = async (req, res, next) => {
@@ -232,4 +232,25 @@ export const deleteCompanyCoverPic = async (req, res, next) => {
   }
 
   res.status(200).json({ msg: "Cover picture deleted successfully" });
+};
+
+export const getUserCompanies = async (req, res, next) => {
+  const userId = req.user._id;
+
+  const companies = await companyModel.aggregate([
+    { $match: { $or: [{ createdBy: userId }, { HRs: { $in: [userId] } }] } },
+    {
+      $addFields: {
+        userRole: {
+          $cond: {
+            if: { $eq: ["$createdBy", userId] },
+            then: "owner",
+            else: "hr",
+          },
+        },
+      },
+    },
+  ]);
+
+  return res.status(200).json({ data: companies });
 };

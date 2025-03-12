@@ -22,6 +22,12 @@ router.post(
 );
 
 router.get(
+  "/userCompanies",
+  isAuthenticate,
+  asyncHandler(companyService.getUserCompanies)
+);
+
+router.get(
   "/search",
   isValid(CV.getCompanyByName),
   isAuthenticate,
