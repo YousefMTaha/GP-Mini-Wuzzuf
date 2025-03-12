@@ -49,7 +49,11 @@ const companySchema = new Schema(
       },
     ],
     logo: {
-      secure_url: String,
+      secure_url: {
+        type: String,
+        default:
+          "https://coffective.com/wp-content/uploads/2018/06/default-featured-image.png.jpg",
+      },
       public_id: String,
     },
     coverPic: {
