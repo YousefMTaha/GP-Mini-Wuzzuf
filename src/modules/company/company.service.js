@@ -18,7 +18,9 @@ export const addCompany = async (req, res, next) => {
 
   const company = await companyModel.create(req.body);
 
-  res.status(200).json({ msg: "Company created successfully", company });
+  res
+    .status(200)
+    .json({ success: true, msg: "Company created successfully", company });
 };
 
 export const updateCompany = async (req, res, next) => {
@@ -55,7 +57,9 @@ export const updateCompany = async (req, res, next) => {
 
   await company.updateOne(req.body);
 
-  res.status(200).json({ msg: "Company updated successfully", company });
+  res
+    .status(200)
+    .json({ success: true, msg: "Company updated successfully", company });
 };
 
 export const deleteCompany = async (req, res, next) => {
@@ -81,7 +85,7 @@ export const deleteCompany = async (req, res, next) => {
   company.deletedAt = new Date();
   await company.save();
 
-  res.status(200).json({ msg: "Company deleted successfully" });
+  res.status(200).json({ success: true, msg: "Company deleted successfully" });
 };
 
 export const getCompany = async (req, res, next) => {
@@ -96,7 +100,7 @@ export const getCompany = async (req, res, next) => {
     return next(new Error("Company not found", { cause: 404 }));
   }
 
-  res.status(200).json({ msg: "Success", company });
+  res.status(200).json({ success: true, msg: "done", company });
 };
 
 export const getCompanyByName = async (req, res, next) => {
@@ -111,7 +115,7 @@ export const getCompanyByName = async (req, res, next) => {
     return next(new Error("Company not found", { cause: 404 }));
   }
 
-  res.status(200).json({ msg: "Success", company });
+  res.status(200).json({ success: true, msg: "Success", company });
 };
 
 export const uploadCompanyLogo = async (req, res, next) => {
@@ -145,7 +149,7 @@ export const uploadCompanyLogo = async (req, res, next) => {
   };
 
   await company.save();
-  res.status(200).json({ msg: "Logo uploaded successfully" });
+  res.status(200).json({ success: true, msg: "Logo uploaded successfully" });
 };
 
 export const uploadCompanyCoverPic = async (req, res, next) => {
@@ -179,7 +183,9 @@ export const uploadCompanyCoverPic = async (req, res, next) => {
   };
 
   await company.save();
-  res.status(200).json({ msg: "Cover picture uploaded successfully" });
+  res
+    .status(200)
+    .json({ success: true, msg: "Cover picture uploaded successfully" });
 };
 
 export const deleteCompanyLogo = async (req, res, next) => {
@@ -205,7 +211,7 @@ export const deleteCompanyLogo = async (req, res, next) => {
     await company.save();
   }
 
-  res.status(200).json({ msg: "Logo deleted successfully" });
+  res.status(200).json({ success: true, msg: "Logo deleted successfully" });
 };
 
 export const deleteCompanyCoverPic = async (req, res, next) => {
@@ -231,7 +237,9 @@ export const deleteCompanyCoverPic = async (req, res, next) => {
     await company.save();
   }
 
-  res.status(200).json({ msg: "Cover picture deleted successfully" });
+  res
+    .status(200)
+    .json({ success: true, msg: "Cover picture deleted successfully" });
 };
 
 export const getUserCompanies = async (req, res, next) => {
@@ -252,5 +260,7 @@ export const getUserCompanies = async (req, res, next) => {
     },
   ]);
 
-  return res.status(200).json({ data: companies });
+  return companies.length
+    ? res.status(200).json({ success: true, data: companies })
+    : next(new Error("no companies found", { cause: 404 }));
 };

@@ -102,7 +102,7 @@ export const getCompanyJobs = async (req, res, next) => {
       })
       .populate("companyId");
     return job
-      ? res.status(200).json({ message: "job found", job })
+      ? res.status(200).json({ success: true, message: "job found", job })
       : next(new Error("Job not found", { cause: 404 }));
   }
 
@@ -279,5 +279,5 @@ export const handleApplication = async (req, res, next) => {
     application.jobId.companyId.companyName
   );
 
-  res.status(200).json({ message: "done" });
+  res.status(200).json({ success: true, message: "done" });
 };

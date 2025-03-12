@@ -17,7 +17,7 @@ export const updateUser = async (req, res, next) => {
 
   await user.updateOne(req.body);
 
-  res.status(200).json({ msg: "updated", user });
+  res.status(200).json({ success: true, msg: "updated", user });
 };
 
 export const updatePassword = async (req, res, next) => {
@@ -31,17 +31,17 @@ export const updatePassword = async (req, res, next) => {
 
   user.password = newPassword;
   await user.save();
-  res.status(200).json({ msg: "done" });
+  res.status(200).json({ success: true, msg: "done" });
 };
 
 export const freezeAccount = async (req, res, next) => {
   req.user.deletedAt = Date.now();
   await req.user.save();
-  res.status(200).json({ msg: "done" });
+  res.status(200).json({ success: true, msg: "done" });
 };
 
 export const getLoginUserData = async (req, res, next) => {
-  res.status(200).json({ msg: "done", user: req.user });
+  res.status(200).json({ success: true, msg: "done", user: req.user });
 };
 
 export const getAnotherUserData = async (req, res, next) => {
@@ -50,7 +50,7 @@ export const getAnotherUserData = async (req, res, next) => {
     .select("firstName lastName mobileNumber email profilePic coverPic");
 
   return user
-    ? res.status(200).json({ msg: "done", user })
+    ? res.status(200).json({ success: true, msg: "done", user })
     : next(new Error("user not exist ", { cause: 404 }));
 };
 
@@ -106,7 +106,7 @@ export const deleteProfilePic = async (req, res, next) => {
   await cloudinary.uploader.destroy(user.profilePic.public_id);
   user.profilePic = null;
   await user.save();
-  return res.json({ message: "Done" });
+  return res.json({ success: true, message: "Done" });
 };
 
 export const deleteCoverPic = async (req, res, next) => {
@@ -118,5 +118,5 @@ export const deleteCoverPic = async (req, res, next) => {
   await cloudinary.uploader.destroy(user.coverPic.public_id);
   user.coverPic = null;
   await user.save();
-  return res.json({ message: "Done" });
+  return res.json({ success: true, message: "Done" });
 };
