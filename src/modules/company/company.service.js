@@ -1,7 +1,21 @@
 import companyModel from "../../DB/models/company.model.js";
-import { roles } from "../../DB/models/user.model.js";
+import userModel, { roles } from "../../DB/models/user.model.js";
 import { cloudinaryFolders } from "../../utils/cloudFolders.js";
 import cloudinary from "../../utils/file upload/cloud-config.js";
+
+async function getUserIds(emails) {
+  const userIds = [];
+  for (const email of emails) {
+    const user = await userModel.findOne({ email });
+    if (user) {
+      userIds.push(user._id);
+    } else {
+      console.log(`User with email ${email} not found.`);
+    }
+  }
+
+  return userIds;
+}
 
 export const addCompany = async (req, res, next) => {
   const { companyEmail, companyName } = req.body;
@@ -15,6 +29,7 @@ export const addCompany = async (req, res, next) => {
   }
 
   req.body.createdBy = req.user._id;
+  req.body.HRs = await getUserIds(req.body.HRs);
 
   const company = await companyModel.create(req.body);
 
