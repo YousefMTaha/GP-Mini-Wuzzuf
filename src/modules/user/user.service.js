@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { encrypt } from "../../utils/crypto/encryption.js";
-import { decrypt } from "../../utils/crypto/decryption.js";
 import cloudinary from "../../utils/file upload/cloud-config.js";
 import userModel from "../../DB/models/user.model.js";
 import { cloudinaryFolders } from "../../utils/cloudFolders.js";
+import { generateToken } from "../../utils/token/generate-token.js";
+import { verifyToken } from "../../utils/token/verify-token.js";
 
 export const updateUser = async (req, res, next) => {
   const { user } = req;
@@ -120,3 +120,40 @@ export const deleteCoverPic = async (req, res, next) => {
   await user.save();
   return res.json({ success: true, message: "Done" });
 };
+
+export const sendChangeEmail = async (req, res, next) => {
+  const { password, newEmail } = req.body;
+
+  const user = await userModel.findById(req.user._id).select("password");
+
+  if (!bcrypt.compareSync(password, user.password)) {
+    return next(new Error("invalid password", { cause: 400 }));
+  }
+
+  const token = generateToken({
+    payload: { email: newEmail, userId: req.user._id },
+  });
+
+  return res.json({ success: true, token });
+};
+
+export const changeEmail = (req, res, next) => {
+  const token = req.body.token;
+
+  try {
+    const { userId, email } = verifyToken({ token });
+
+
+
+
+  } catch (error) {
+
+
+  }
+};
+
+export const verifyEmail = async (req, res, next) => {
+
+
+  
+}

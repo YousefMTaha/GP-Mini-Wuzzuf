@@ -1,7 +1,18 @@
 import multer, { diskStorage } from "multer";
 
 export const fileValidation = {
-  images: ["image/png", "image/jpeg", "image/webp"],
+  images: [
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+    "image/gif",
+    "image/svg+xml",
+    "image/tiff",
+    "image/bmp",
+    "image/x-icon",
+    "image/heic",
+    "image/avif",
+  ],
   files: ["application/pdf", "application/msword"],
   videos: ["video/mp4"],
 };

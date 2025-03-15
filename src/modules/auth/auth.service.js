@@ -3,7 +3,6 @@ import bcrypt, { compareSync } from "bcrypt";
 import cron from "node-cron";
 import { OAuth2Client } from "google-auth-library";
 import userModel, { otpTypes, providers } from "../../DB/models/user.model.js";
-import { compare } from "../../utils/hash/compare.js";
 import { generateToken } from "../../utils/token/generate-token.js";
 import { verifyToken } from "../../utils/token/verify-token.js";
 import { emailEvent } from "../../utils/email/email-event.js";
