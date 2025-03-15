@@ -24,5 +24,5 @@ export const cloudUpload = (allowTypes) => {
     }
     return cb(null, true);
   };
-  return multer({ storage, fileFilter });
+  return multer({ storage });
 };
