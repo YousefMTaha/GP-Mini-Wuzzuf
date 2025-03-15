@@ -5,16 +5,18 @@ import cloudinary from "../../utils/file upload/cloud-config.js";
 
 async function getUserIds(emails) {
   const userIds = [];
+  const validEmails = [];
   for (const email of emails) {
     const user = await userModel.findOne({ email });
     if (user) {
       userIds.push(user._id);
+      validEmails.push(email);
     } else {
       console.log(`User with email ${email} not found.`);
     }
   }
 
-  return userIds;
+  return { ids: userIds, emails: validEmails };
 }
 
 export const addCompany = async (req, res, next) => {
@@ -28,12 +30,13 @@ export const addCompany = async (req, res, next) => {
     return next(new Error("Company name already exists", { cause: 409 }));
   }
 
+  const HRsInfo = await getUserIds(req.body.HRs);
+
+  req.body.HRs = HRsInfo.ids;
   req.body.createdBy = req.user._id;
-  req.body.HRs = await getUserIds(req.body.HRs);
-
   const company = await companyModel.create(req.body);
-
-  res
+  company._doc.HRs = HRsInfo.emails;
+  return res
     .status(200)
     .json({ success: true, msg: "Company created successfully", company });
 };
