@@ -278,7 +278,6 @@ export const getUserCompanies = async (req, res, next) => {
     },
   ]);
 
-  return companies.length
-    ? res.status(200).json({ success: true, data: companies })
-    : next(new Error("no companies found", { cause: 404 }));
+  return  res.status(200).json({ success: true, data: companies })
+
 };

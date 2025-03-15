@@ -106,8 +106,7 @@ export const getCompanyJobs = async (req, res, next) => {
 
   const total = await jobModel.countDocuments(query);
 
-  return jobs.length
-    ? res.status(200).json({
+  return res.status(200).json({
         success: true,
         jobs,
         pagination: {
@@ -116,7 +115,7 @@ export const getCompanyJobs = async (req, res, next) => {
           totalJobs: total,
         },
       })
-    : next(new Error("No jobs Found", { cause: 404 }));
+    
 };
 
 async function getCompaniesId(name) {
@@ -157,8 +156,7 @@ export const filterJobs = async (req, res, next) => {
 
   const total = await jobModel.countDocuments(restQueryFields);
 
-  return jobs.length
-    ? res.status(200).json({
+  return  res.status(200).json({
         success: true,
         jobs,
         pagination: {
@@ -167,7 +165,7 @@ export const filterJobs = async (req, res, next) => {
           totalJobs: total,
         },
       })
-    : next(new Error("No jobs Found", { cause: 404 }));
+    
 };
 
 export const getJobApplications = async (req, res, next) => {
@@ -202,8 +200,7 @@ export const getJobApplications = async (req, res, next) => {
 
   const total = await applicationModel.countDocuments({ jobId: job._id });
 
-  return job.applications?.length
-    ? res.status(200).json({
+  return  res.status(200).json({
         success: true,
         applications: job.applications,
         pagination: {
@@ -212,7 +209,6 @@ export const getJobApplications = async (req, res, next) => {
           totalApplications: total,
         },
       })
-    : next(new Error("No applications Found", { cause: 404 }));
 };
 
 export const applyJob = async (req, res, next) => {
