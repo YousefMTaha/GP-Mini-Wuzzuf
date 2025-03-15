@@ -36,7 +36,7 @@ router.get(
 
 router.patch(
   "/uploadCompanyLogo/:id",
-  isValid(CV.uploadPic),
+  // isValid(CV.uploadPic),
   isAuthenticate,
   cloudUpload(fileValidation.images).single("image"),
   asyncHandler(companyService.uploadCompanyLogo)
@@ -52,35 +52,35 @@ router.patch(
 
 router.delete(
   "/deleteCompanyLogo/:id",
-  isValid(CV.deleteCompanyPic),
+  // isValid(CV.deleteCompanyPic),
   isAuthenticate,
   asyncHandler(companyService.deleteCompanyLogo)
 );
 
 router.delete(
   "/deleteCompanyCoverPic/:id",
-  isValid(CV.deleteCompanyPic),
+  // isValid(CV.deleteCompanyPic),
   isAuthenticate,
   asyncHandler(companyService.deleteCompanyCoverPic)
 );
 
 router.get(
   "/:id",
-  isValid(CV.getCompany),
+  // isValid(CV.getCompany),
   isAuthenticate,
   asyncHandler(companyService.getCompany)
 );
 
 router.delete(
   "/:id",
-  isValid(CV.deleteCompany),
+  // isValid(CV.deleteCompany),
   isAuthenticate,
   asyncHandler(companyService.deleteCompany)
 );
 
 router.patch(
   "/:id",
-  isValid(CV.updateCompany),
+  // isValid(CV.updateCompany),
   isAuthenticate,
   asyncHandler(companyService.updateCompany)
 );
