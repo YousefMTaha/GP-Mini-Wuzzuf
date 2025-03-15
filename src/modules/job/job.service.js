@@ -250,11 +250,6 @@ export const applyJob = async (req, res, next) => {
 
   console.log("Notification to hr event");
 
-  io.to(job.createdBy).emit("newApplication", {
-    message: "New application Submitted",
-    application,
-  });
-
   res.status(200).json({ success: true, application });
 };
 
