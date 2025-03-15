@@ -99,9 +99,17 @@ export const deleteCompany = async (req, res, next) => {
       new Error("Not authorized to delete this company", { cause: 403 })
     );
   }
+// Delete company logo and cover pic from cloudinary if they exist
+if (company.logo?.public_id) {
+  await cloudinary.uploader.destroy(company.logo.public_id);
+}
 
-  company.deletedAt = new Date();
-  await company.save();
+if (company.coverPic?.public_id) {
+  await cloudinary.uploader.destroy(company.coverPic.public_id);
+}
+
+// Hard delete the company
+await companyModel.deleteOne({ _id: req.params.id });
 
   res.status(200).json({ success: true, msg: "Company deleted successfully" });
 };

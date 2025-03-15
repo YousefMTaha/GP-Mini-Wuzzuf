@@ -107,5 +107,14 @@ companySchema.post("save", async function () {
   }
 });
 
+companySchema.pre('deleteOne', { document: false, query: true }, async function() {
+  const companyId = this.getQuery()._id;
+  
+  // Delete all jobs associated with this company
+  await jobModel.deleteMany({ company: companyId });
+  
+
+});
+
 const companyModel = model("Company", companySchema);
 export default companyModel;
