@@ -35,8 +35,8 @@ export const updatePassword = async (req, res, next) => {
 };
 
 export const freezeAccount = async (req, res, next) => {
-  req.user.deletedAt = Date.now();
-  await req.user.save();
+  // req.user.deletedAt = Date.now();
+  await req.user.deleteOne();
   res.status(200).json({ success: true, msg: "done" });
 };
 
@@ -137,23 +137,23 @@ export const sendChangeEmail = async (req, res, next) => {
   return res.json({ success: true, token });
 };
 
-export const changeEmail = (req, res, next) => {
-  const token = req.body.token;
+// export const changeEmail = (req, res, next) => {
+//   const token = req.body.token;
 
-  try {
-    const { userId, email } = verifyToken({ token });
-
-
+//   try {
+//     const { userId, email } = verifyToken({ token });
 
 
-  } catch (error) {
 
 
-  }
-};
+//   } catch (error) {
 
-export const verifyEmail = async (req, res, next) => {
+
+//   }
+// };
+
+// export const verifyEmail = async (req, res, next) => {
 
 
   
-}
+// }
