@@ -17,7 +17,7 @@ export const addJob = async (req, res, next) => {
   }
 
   if (
-    company.createdBy.toString() !== req.user._id &&
+    company.createdBy.toString() != req.user._id &&
     !company.HRs.includes(req.user._id)
   ) {
     return next(
