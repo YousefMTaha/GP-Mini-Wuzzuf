@@ -21,6 +21,7 @@ export const authenticate = (...roles) => {
     if (!user) {
       throw new Error("User not found");
     }
+    
     if (user.deletedAt) {
       throw new Error("Your account is deleted");
     }

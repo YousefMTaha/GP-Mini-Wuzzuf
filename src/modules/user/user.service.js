@@ -1,10 +1,13 @@
 import bcrypt from "bcrypt";
 import { encrypt } from "../../utils/crypto/encryption.js";
 import cloudinary from "../../utils/file upload/cloud-config.js";
-import userModel from "../../DB/models/user.model.js";
+import userModel, { status } from "../../DB/models/user.model.js";
 import { cloudinaryFolders } from "../../utils/cloudFolders.js";
 import { generateToken } from "../../utils/token/generate-token.js";
 import { verifyToken } from "../../utils/token/verify-token.js";
+import otpModel from "../../DB/models/otp.mode.js";
+import { emailEvent } from "../../utils/email/email-event.js";
+import Randomstring from "randomstring";
 
 export const updateUser = async (req, res, next) => {
   const { user } = req;
@@ -17,7 +20,11 @@ export const updateUser = async (req, res, next) => {
 
   await user.updateOne(req.body);
 
-  res.status(200).json({ success: true, msg: "updated", user });
+  const newUser = await userModel.findByIdAndUpdate(req.user._id, req.body, {
+    new: true,
+  });
+
+  res.status(200).json({ success: true, msg: "updated", user: newUser });
 };
 
 export const updatePassword = async (req, res, next) => {
@@ -30,6 +37,8 @@ export const updatePassword = async (req, res, next) => {
   }
 
   user.password = newPassword;
+  user.status = status.offline;
+  user.changeCredentialTime = new Date();
   await user.save();
   res.status(200).json({ success: true, msg: "done" });
 };
@@ -121,8 +130,8 @@ export const deleteCoverPic = async (req, res, next) => {
   return res.json({ success: true, message: "Done" });
 };
 
-export const sendChangeEmail = async (req, res, next) => {
-  const { password, newEmail } = req.body;
+export const checkPasswordChangeEmail = async (req, res, next) => {
+  const { password } = req.body;
 
   const user = await userModel.findById(req.user._id).select("password");
 
@@ -131,29 +140,54 @@ export const sendChangeEmail = async (req, res, next) => {
   }
 
   const token = generateToken({
-    payload: { email: newEmail, userId: req.user._id },
+    payload: { userId: req.user._id },
   });
 
   return res.json({ success: true, token });
 };
 
-// export const changeEmail = (req, res, next) => {
-//   const token = req.body.token;
+export const sendOTP = async (req, res, next) => {
+  const { email, token } = req.body;
+  try {
+    const { userId } = verifyToken({ token });
 
-//   try {
-//     const { userId, email } = verifyToken({ token });
+    if (userId.toString() != req.user._id.toString()) {
+      return next(new Error("invalid token userId", { cause: 400 }));
+    }
 
+    const userExist = await userModel.findOne({ email }); //{} | null
 
+    if (userExist) return next(new Error("User already exist", { cause: 409 }));
 
+    const otp = Randomstring.generate({ length: 5, charset: "numeric" });
+    await otpModel.deleteMany({ email });
+    await otpModel.create({ email, otp });
+    emailEvent.emit("sendEmail", email, "Confirm Your new Email", otp);
 
-//   } catch (error) {
+    return res.status(200).json({
+      success: true,
+      message: "otp sent successfully",
+    });
+  } catch (error) {
+    return next(new Error(error.message, { cause: 400 }));
+  }
+};
 
+export const changeEmail = async (req, res, next) => {
+  const { email, otp } = req.body;
+  const checkOTP = await otpModel.findOne({ email, otp });
 
-//   }
-// };
+  if (!checkOTP)
+    return next(new Error("invalid OTP or OTP expired", { cause: 400 }));
 
-// export const verifyEmail = async (req, res, next) => {
+  await checkOTP.deleteOne();
 
+  await req.user.updateOne({ email, status: status.offline });
 
-  
-// }
+  return res.json({ success: true, message: "Done" });
+};
+
+export const logout = async (req, res, next) => {
+  await req.user.updateOne({ status: status.offline });
+  return res.status(200).json({ success: true, message: "Done" });
+};

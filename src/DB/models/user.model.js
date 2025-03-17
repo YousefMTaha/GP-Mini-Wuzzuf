@@ -23,6 +23,11 @@ export const otpTypes = {
   FORGET_PASSWORD: "forgetPassword",
 };
 
+export const status = {
+  online: "online",
+  offline: "offline",
+};
+
 const userSchema = new Schema(
   {
     firstName: {
@@ -87,6 +92,11 @@ const userSchema = new Schema(
       type: String,
       enum: Object.values(roles),
       default: roles.USER,
+    },
+    status: {
+      type: String,
+      enum: Object.values(status),
+      default: status.offline,
     },
     isConfirmed: {
       type: Boolean,

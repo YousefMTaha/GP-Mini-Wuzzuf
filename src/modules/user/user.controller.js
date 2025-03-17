@@ -61,4 +61,19 @@ userRouter.delete(
   asyncHandler(userService.deleteCoverPic)
 );
 
+userRouter.post(
+  "/checkPasswordChangeEmail",
+  isAuthenticate,
+  asyncHandler(userService.checkPasswordChangeEmail)
+);
+
+userRouter.post("/sendOTP", isAuthenticate, asyncHandler(userService.sendOTP));
+
+userRouter.post(
+  "/changeEmail",
+  isAuthenticate,
+  asyncHandler(userService.changeEmail)
+);
+
+userRouter.post("/logout", isAuthenticate, asyncHandler(userService.logout));
 export default userRouter;

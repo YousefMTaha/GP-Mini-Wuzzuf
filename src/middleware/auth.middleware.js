@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import userModel from "../DB/models/user.model.js";
+import userModel, { status } from "../DB/models/user.model.js";
 
 export const isAuthenticate = async (req, res, next) => {
   try {
@@ -17,9 +17,9 @@ export const isAuthenticate = async (req, res, next) => {
     const token = authorization.split(" ")[1]; // [Bearer,token]
 
     //  check token
-    const { email } = jwt.verify(token, process.env.SECRET_JWT);
+    const { id } = jwt.verify(token, process.env.SECRET_JWT);
 
-    const user = await userModel.findOne({ email }, { password: 0 }); // {} | null
+    const user = await userModel.findById(id, { password: 0 }); // {} | null
     if (!user)
       return res
         .status(404)
@@ -32,6 +32,11 @@ export const isAuthenticate = async (req, res, next) => {
         })
       );
     }
+
+    if (user.status == status.offline) {
+      return next(new Error("You need to login again", { cause: 400 }));
+    }
+
     req.user = user;
     return next();
   } catch (error) {

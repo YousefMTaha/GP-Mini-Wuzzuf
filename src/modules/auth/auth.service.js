@@ -2,7 +2,11 @@ import Randomstring from "randomstring";
 import bcrypt, { compareSync } from "bcrypt";
 import cron from "node-cron";
 import { OAuth2Client } from "google-auth-library";
-import userModel, { otpTypes, providers } from "../../DB/models/user.model.js";
+import userModel, {
+  otpTypes,
+  providers,
+  status,
+} from "../../DB/models/user.model.js";
 import { generateToken } from "../../utils/token/generate-token.js";
 import { verifyToken } from "../../utils/token/verify-token.js";
 import { emailEvent } from "../../utils/email/email-event.js";
@@ -80,10 +84,12 @@ export const login = async (req, res, next) => {
     await user.updateOne({ $unset: { deletedAt: 1 } });
   }
 
+  await user.updateOne({ status: status.online });
+
   return res.status(200).json({
     success: true,
     message: "Login successful",
-    token: generateToken({ payload: { email } }),
+    token: generateToken({ payload: { id: user._id } }),
   });
 };
 
