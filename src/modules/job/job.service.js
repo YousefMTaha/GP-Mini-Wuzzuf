@@ -72,8 +72,13 @@ export const deleteJob = async (req, res, next) => {
     return next(new Error("Job not found", { cause: 404 }));
   }
 
-  if (!job.companyId.HRs.includes(req.user._id)) {
-    return next(new Error("Only company HR can delete jobs", { cause: 403 }));
+  if (
+    company.createdBy.toString() != req.user._id &&
+    !company.HRs.includes(req.user._id)
+  ) {
+    return next(
+      new Error("Only company HR or owner can delete jobs", { cause: 403 })
+    );
   }
 
   await job.deleteOne();
@@ -107,15 +112,14 @@ export const getCompanyJobs = async (req, res, next) => {
   const total = await jobModel.countDocuments(query);
 
   return res.status(200).json({
-        success: true,
-        jobs,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(total / limit),
-          totalJobs: total,
-        },
-      })
-    
+    success: true,
+    jobs,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalJobs: total,
+    },
+  });
 };
 
 async function getCompaniesId(name) {
@@ -156,16 +160,15 @@ export const filterJobs = async (req, res, next) => {
 
   const total = await jobModel.countDocuments(restQueryFields);
 
-  return  res.status(200).json({
-        success: true,
-        jobs,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(total / limit),
-          totalJobs: total,
-        },
-      })
-    
+  return res.status(200).json({
+    success: true,
+    jobs,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalJobs: total,
+    },
+  });
 };
 
 export const getJobApplications = async (req, res, next) => {
@@ -200,15 +203,15 @@ export const getJobApplications = async (req, res, next) => {
 
   const total = await applicationModel.countDocuments({ jobId: job._id });
 
-  return  res.status(200).json({
-        success: true,
-        applications: job.applications,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(total / limit),
-          totalApplications: total,
-        },
-      })
+  return res.status(200).json({
+    success: true,
+    applications: job.applications,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalApplications: total,
+    },
+  });
 };
 
 export const applyJob = async (req, res, next) => {

@@ -6,6 +6,7 @@ import { encrypt } from "../../utils/crypto/encryption.js";
 export const roles = {
   USER: "User",
   ADMIN: "Admin",
+  COMPANY_OWNER: "Company_owner",
 };
 
 export const genders = {

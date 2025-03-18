@@ -73,6 +73,12 @@ export const updateCompany = async (req, res, next) => {
     }
   }
 
+  if (req.body.HRs) {
+    const HRsInfo = await getUserIds(req.body.HRs);
+    req.body = { $addToSet: { HRs: { $each: HRsInfo.ids } } };
+    delete req.body.HRs
+  }
+
   await company.updateOne(req.body);
 
   res
@@ -99,17 +105,17 @@ export const deleteCompany = async (req, res, next) => {
       new Error("Not authorized to delete this company", { cause: 403 })
     );
   }
-// Delete company logo and cover pic from cloudinary if they exist
-if (company.logo?.public_id) {
-  await cloudinary.uploader.destroy(company.logo.public_id);
-}
+  // Delete company logo and cover pic from cloudinary if they exist
+  if (company.logo?.public_id) {
+    await cloudinary.uploader.destroy(company.logo.public_id);
+  }
 
-if (company.coverPic?.public_id) {
-  await cloudinary.uploader.destroy(company.coverPic.public_id);
-}
+  if (company.coverPic?.public_id) {
+    await cloudinary.uploader.destroy(company.coverPic.public_id);
+  }
 
-// Hard delete the company
-await companyModel.deleteOne({ _id: req.params.id });
+  // Hard delete the company
+  await companyModel.deleteOne({ _id: req.params.id });
 
   res.status(200).json({ success: true, msg: "Company deleted successfully" });
 };
@@ -286,6 +292,5 @@ export const getUserCompanies = async (req, res, next) => {
     },
   ]);
 
-  return  res.status(200).json({ success: true, data: companies })
-
+  return res.status(200).json({ success: true, data: companies });
 };
