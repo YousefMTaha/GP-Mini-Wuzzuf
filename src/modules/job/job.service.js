@@ -1,13 +1,9 @@
 import companyModel from "../../DB/models/company.model.js";
 import jobModel from "../../DB/models/job.model.js";
-import applicationModel, {
-  applicationStatus,
-} from "../../DB/models/application.model.js";
-import { roles } from "../../DB/models/user.model.js";
+import applicationModel from "../../DB/models/application.model.js";
 import cloudinary from "../../utils/file upload/cloud-config.js";
 import { emailEvent } from "../../utils/email/email-event.js";
 import { cloudinaryFolders } from "../../utils/cloudFolders.js";
-import io from "../../socket.io/index.js";
 
 export const addJob = async (req, res, next) => {
   const company = await companyModel.findById(req.params.id);
@@ -23,10 +19,6 @@ export const addJob = async (req, res, next) => {
     return next(
       new Error("Not authorized to add jobs for this company", { cause: 403 })
     );
-  }
-
-  if (!company.approvedByAdmin) {
-    return next(new Error("Company is not approved by admin", { cause: 403 }));
   }
 
   if (company.deletedAt) {

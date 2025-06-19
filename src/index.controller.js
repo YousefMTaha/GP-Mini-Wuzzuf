@@ -5,12 +5,10 @@ import authRouter from "./modules/auth/auth.controller.js";
 import userRouter from "./modules/user/user.controller.js";
 import { globalError } from "./utils/error/global-error.js";
 import { notFound } from "./utils/error/not-found.js";
-import adminRouter from "./modules/Admin/restAPI/admin.controller.js";
-import { createHandler } from "graphql-http/lib/use/express";
-import { adminGraphqlSchema } from "./modules/Admin/graphql/admin.graphql.js";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import cors from "cors";
+import interviewRouter from "./modules/interview/interview.controller.js";
 
 export const bootstrap = (app, express) => {
   app.use(express.json());
@@ -27,19 +25,11 @@ export const bootstrap = (app, express) => {
 
   dbConnection();
 
-  app.use(
-    "/graphql",
-    createHandler({
-      schema: adminGraphqlSchema,
-      context: (req) => ({ req }),
-    })
-  );
-
   app.use("/auth", authRouter);
   app.use("/users", userRouter);
   app.use("/companies", companyRoutes);
   app.use("/jobs", jobRoutes);
-  app.use("/admins", adminRouter);
+  app.use("/interviews", interviewRouter);
 
   app.use("*", notFound);
 
