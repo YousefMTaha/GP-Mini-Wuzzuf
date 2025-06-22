@@ -58,6 +58,18 @@ router.post(
   asyncHandler(JS.handleApplication)
 );
 
+router.get(
+  "/application-status/:jobId",
+  isAuthenticate,
+  asyncHandler(JS.getApplicationStatus)
+);
+
+router.patch(
+  "/change-application-status/:jobId",
+  isAuthenticate,
+  asyncHandler(JS.changeApplicationStatus)
+);
+
 router.get("/:jobId?", isAuthenticate, asyncHandler(JS.getCompanyJobs));
 
 export default router;

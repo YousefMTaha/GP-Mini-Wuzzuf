@@ -1,11 +1,8 @@
 import { Schema, model, Types } from "mongoose";
 
 export const applicationStatus = {
-  PENDING: "pending",
-  ACCEPTED: "accepted",
-  VIEWED: "viewed",
-  IN_CONSIDERATION: "in consideration",
-  REJECTED: "rejected",
+  APPLIED: "applied",
+  INTERVIEWED: "interviewed",
 };
 
 const applicationSchema = new Schema(
@@ -33,7 +30,7 @@ const applicationSchema = new Schema(
     status: {
       type: String,
       enum: Object.values(applicationStatus),
-      default: applicationStatus.PENDING,
+      default: applicationStatus.APPLIED,
     },
   },
   {

@@ -1,6 +1,8 @@
 import companyModel from "../../DB/models/company.model.js";
 import jobModel from "../../DB/models/job.model.js";
-import applicationModel from "../../DB/models/application.model.js";
+import applicationModel, {
+  applicationStatus,
+} from "../../DB/models/application.model.js";
 import cloudinary from "../../utils/file upload/cloud-config.js";
 import { emailEvent } from "../../utils/email/email-event.js";
 import { cloudinaryFolders } from "../../utils/cloudFolders.js";
@@ -277,4 +279,37 @@ export const handleApplication = async (req, res, next) => {
   );
 
   res.status(200).json({ success: true, message: "done" });
+};
+
+export const changeApplicationStatus = async (req, res, next) => {
+  const { jobId } = req.params;
+
+  const application = await applicationModel.findOneAndUpdate(
+    { jobId, userId: req.user._id },
+    { status: applicationStatus.INTERVIEWED }
+  );
+
+  if (!application) {
+    return next(
+      new Error("Application not found or you are not the applicant", {
+        cause: 404,
+      })
+    );
+  }
+
+  res.status(200).json({ success: true, message: "done" });
+};
+
+export const getApplicationStatus = async (req, res, next) => {
+  const { jobId } = req.params;
+
+  const application = await applicationModel.findOne({
+    jobId,
+    userId: req.user._id,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: application ? application.status : "not applied",
+  });
 };
