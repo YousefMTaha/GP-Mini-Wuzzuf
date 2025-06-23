@@ -41,6 +41,10 @@ const interviewSchema = new Schema(
       max: 100,
       required: true,
     },
+    duration: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,
