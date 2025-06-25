@@ -1,3 +1,4 @@
+import applicationModel from "../../DB/models/application.model.js";
 import interviewModel from "../../DB/models/interview.model.js";
 import jobModel from "../../DB/models/job.model.js";
 import { decrypt } from "../../utils/crypto/decryption.js";
@@ -55,14 +56,30 @@ export const getInterviewSummaryByJobId = async (req, res, next) => {
     .populate("userId", "firstName lastName userName email mobileNumber ")
     .sort("score");
 
-  const result = data.map((interview) => {
-    if (interview.userId) {
-      interview.userId.mobileNumber = decrypt({
-        data: interview.userId.mobileNumber,
-      });
-    }
-    return interview;
-  });
+  const result = await Promise.all(
+    data.map(async (interview) => {
+      let userCV = null;
+      if (interview.userId) {
+        // if mobile number is not decrypted, decrypt it
+        if (!interview.userId.mobileNumber.startsWith("0")) {
+          interview._doc.userId.mobileNumber = decrypt({
+            data: interview.userId.mobileNumber,
+          });
+        }
+        const application = await applicationModel
+          .findOne({
+            userId: interview.userId._id,
+            jobId: req.params.jobId,
+          })
+          .select("userCV");
+        userCV = application?.userCV?.secure_url;
+      }
+
+      return { ...interview._doc, userCV };
+    })
+  );
+
+  // console.log(result);
 
   return res.status(200).json({
     success: true,
