@@ -79,8 +79,6 @@ export const getInterviewSummaryByJobId = async (req, res, next) => {
     })
   );
 
-  // console.log(result);
-
   return res.status(200).json({
     success: true,
     message: "Interview summary retrieved successfully",
