@@ -176,7 +176,7 @@ export const getJobApplications = async (req, res, next) => {
   }
 
   if (
-    job.createdBy.toString() !== req.user._id &&
+    job.createdBy.toString() != req.user._id &&
     !job.companyId.HRs.includes(req.user._id)
   ) {
     return next(
