@@ -40,14 +40,14 @@ export const getInterviewSummary = async (req, res, next) => {
 };
 
 export const getInterviewSummaryByJobId = async (req, res, next) => {
-  // if (
-  //   !(await jobModel.findOne({ _id: req.params.jobId, userId: req.user._id }))
-  // ) {
-  //   return res.status(401).json({
-  //     success: false,
-  //     message: "You are not authorized to access this job",
-  //   });
-  // }
+  if (
+    !(await jobModel.findOne({ _id: req.params.jobId, userId: req.user._id }))
+  ) {
+    return res.status(401).json({
+      success: false,
+      message: "You are not authorized to access this job",
+    });
+  }
 
   const data = await interviewModel
     .find({
