@@ -25,6 +25,10 @@ export const bootstrap = (app, express) => {
 
   dbConnection();
 
+  app.get("/health", (req, res) => {
+    res.status(200).json({ message: "Server is running" });
+  });
+
   app.use("/auth", authRouter);
   app.use("/users", userRouter);
   app.use("/companies", companyRoutes);

@@ -1,0 +1,9 @@
+node_modules
+src/config
+.git
+.gitignore
+.env
+*.png
+*.pdf
+*.dmm
+GP-LinkAI-mini.png
