@@ -199,6 +199,7 @@ This is a backend API built using **Express.js** and **MongoDB** for Mini Wuzzuf
 
 - **Access the application:**
   - The API will be available at `http://localhost:3000`
+  - try to access this url `http://localhost:3000/health` with method `GET` to see the api is running or not
 
 ### Environment Variables
 
