@@ -1,4 +1,4 @@
-# Mini Wuzzuf API
+# Mini Wuzzuf APIs
 
 This is a backend API built using **Express.js** and **MongoDB** for Mini Wuzzuf. It provides authentication, user and company management, job handling, interview system, and scheduled tasks using **CRON jobs**.
 
